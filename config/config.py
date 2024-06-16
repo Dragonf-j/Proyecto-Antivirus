@@ -38,15 +38,12 @@ class basicConfig:
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Formato de los mensajes
         datefmt='%Y-%m-%d %H:%M:%S'  # Formato de la fecha y hora
         )
-    @staticmethod
     def getPathOrigin(jsonData):
         carpeta_origen = jsonData['carpeta_origen']
         return carpeta_origen
-    @staticmethod
     def getDestine(jsonData):
         carpeta_destino = jsonData['carpeta_destino']
         return carpeta_destino
-    @staticmethod
     def getLogName(jsonData):
         filename = jsonData['logFileName']
         return filename
