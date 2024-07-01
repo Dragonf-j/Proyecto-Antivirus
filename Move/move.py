@@ -3,7 +3,7 @@ import json
 import os
 from config import config
 import logging
-from send2trash import send2trash
+
 
 class move:
     carpeta_destino = ''
@@ -21,7 +21,6 @@ class move:
                 carpeta= carpeta_origen + fic
                 #move.fileMove(carpeta, carpeta_destino) 
                 move.deleteFile(carpeta)    
-                logging.info(f"Se lee el fichero: {carpeta} y se mueve a: {carpeta_destino}")
             config.basicConfig.configLog(config.basicConfig.getLogName(json))
                 
         except Exception as exp:
@@ -36,8 +35,11 @@ class move:
 
     def deleteFile(carpeta):
         try:
-            send2trash(carpeta)
-            logging.info(f"Se procede a eliminar los ficheros de la " +carpeta)
+            logging.info(f"Se procede a eliminar los datos ubicados en la " +carpeta)
+            if os.path.isfile == True:
+                os.remove(carpeta)
+            else:
+                shutil.rmtree(carpeta)
         except Exception as exp:
             logging.error(f"Se ha producido un error al eliminar los datos  " +str(exp ))
 
