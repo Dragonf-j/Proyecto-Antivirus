@@ -20,12 +20,7 @@ class move:
             for fic in ficheros:
                 carpeta = ""
                 carpeta= carpeta_origen + fic
-                if Sistema_Antivirus.antiVirus.scanVirusTotal(fic,key) == 200:
-                    #move.fileMove(carpeta, carpeta_destino)
-                    print(Sistema_Antivirus.antiVirus.scanVirusTotal(fic))
-                else:
-                    #move.deleteFile(carpeta)
-                    print(Sistema_Antivirus.antiVirus.scanVirusTotal(fic))    
+                Sistema_Antivirus.antiVirus.scanVirusTotal(carpeta, key, carpeta_destino)
             config.basicConfig.configLog(config.basicConfig.getLogName(json))
                 
         except Exception as exp:
