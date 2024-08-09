@@ -47,6 +47,8 @@ class basicConfig:
     def getLogName(jsonData):
         filename = jsonData['logFileName']
         return filename
-        
+    def getAPIKey(jsonData):
+        apiKey = jsonData['api-VirusTotal']
+        return apiKey
 
 

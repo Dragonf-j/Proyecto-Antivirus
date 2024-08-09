@@ -1,8 +1,8 @@
 import shutil
-import json
 import os
 from config import config
 import logging
+from Antivirus import Sistema_Antivirus
 
 
 class move:
@@ -16,11 +16,18 @@ class move:
             contenido_File = os.listdir(carpeta_origen)
             ficheros = [f for f in contenido_File]
             carpeta_destino = config.basicConfig.getDestine(json)
+            key = config.basicConfig.getAPIKey(json)
             for fic in ficheros:
                 carpeta = ""
                 carpeta= carpeta_origen + fic
-                #move.fileMove(carpeta, carpeta_destino) 
-                move.deleteFile(carpeta)    
+                url_analysis = Sistema_Antivirus.antiVirus.ResultAnalysis(carpeta, key)
+                malicius = url_analysis["data"]["attributes"]["stats"]["malicious"]
+                suspicious = url_analysis["data"]["attributes"]["stats"]["suspicious"]
+                logging.info("Resultados del análisis. Datos maliciosos: "+str(malicius)+" Datos sospechosos: "+str(suspicious))
+                if malicius == 0 and suspicious == 0:
+                    move.fileMove(carpeta, carpeta_destino)
+                else:
+                    move.deleteFile(carpeta)
             config.basicConfig.configLog(config.basicConfig.getLogName(json))
                 
         except Exception as exp:
