@@ -20,7 +20,14 @@ class move:
             for fic in ficheros:
                 carpeta = ""
                 carpeta= carpeta_origen + fic
-                Sistema_Antivirus.antiVirus.scanVirusTotal(carpeta, key, carpeta_destino)
+                url_analysis = Sistema_Antivirus.antiVirus.ResultAnalysis(carpeta, key)
+                malicius = url_analysis["data"]["attributes"]["stats"]["malicious"]
+                suspicious = url_analysis["data"]["attributes"]["stats"]["suspicious"]
+                logging.info("Resultados del análisis. Datos maliciosos: "+str(malicius)+" Datos sospechosos: "+str(suspicious))
+                if malicius == 0 and suspicious == 0:
+                    move.fileMove(carpeta, carpeta_destino)
+                else:
+                    move.deleteFile(carpeta)
             config.basicConfig.configLog(config.basicConfig.getLogName(json))
                 
         except Exception as exp:
