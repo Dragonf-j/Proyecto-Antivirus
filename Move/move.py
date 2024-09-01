@@ -2,7 +2,7 @@ import shutil
 import os
 from config import config
 import logging
-from Antivirus import Sistema_Antivirus
+from Antivirus import Select
 
 
 class move:
@@ -20,14 +20,7 @@ class move:
             for fic in ficheros:
                 carpeta = ""
                 carpeta= carpeta_origen + fic
-                url_analysis = Sistema_Antivirus.antiVirus.ResultAnalysis(carpeta, key)
-                malicius = url_analysis["data"]["attributes"]["stats"]["malicious"]
-                suspicious = url_analysis["data"]["attributes"]["stats"]["suspicious"]
-                logging.info("Resultados del análisis. Datos maliciosos: "+str(malicius)+" Datos sospechosos: "+str(suspicious))
-                if malicius == 0 and suspicious == 0:
-                    move.fileMove(carpeta, carpeta_destino)
-                else:
-                    move.deleteFile(carpeta)
+                Select.Selectect.classify(carpeta, key)
             config.basicConfig.configLog(config.basicConfig.getLogName(json))
                 
         except Exception as exp:
