@@ -2,7 +2,7 @@ import logging
 import requests
 import time
 
-class antiVirus:
+class antiVirus: #Cambiar nombre de clase a Virustotal
 
     def scanVirusTotal(files, api):
         url = "https://www.virustotal.com/api/v3/files"
@@ -45,13 +45,9 @@ class antiVirus:
             else:
                 print(f"Estado del análisis: {analysis_status}")
                 break
-        url_analysis = analysis_response.json()#analysis_response.json().get("data",{"stats"}).get("malicious")
+        url_analysis = analysis_response.json()
         return url_analysis
-        #malicius = url_analysis["data"]["attributes"]["stats"]["malicious"]
 
-        #suspicious = url_analysis["data"]["attributes"]["stats"]["suspicious"]
-        #logging.info("Resultados del análisis. Datos maliciosos: "+str(malicius)+" Datos sospechosos: "+str(suspicious))
-        #if malicius == 0 and suspicious == 0:
-        #   move.move.fileMove(files, destino)
-        #else:
-        #   move.move.deleteFile(files)
+
+class ALternaitivaAntivirus:
+    print()
