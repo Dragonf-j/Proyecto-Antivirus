@@ -20,7 +20,7 @@ class move:
             for fic in ficheros:
                 carpeta = ""
                 carpeta= carpeta_origen + fic
-                Select.Selectect.classify(carpeta, key)
+                Select.Selectect.classify(carpeta, key, carpeta_destino)
             config.basicConfig.configLog(config.basicConfig.getLogName(json))
                 
         except Exception as exp:

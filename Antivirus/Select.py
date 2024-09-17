@@ -21,4 +21,4 @@ class Selectect:
             else:
                 move.move.deleteFile(fichero)
         else:
-            print()
+            Sistema_Antivirus.ALternaitivaAntivirus

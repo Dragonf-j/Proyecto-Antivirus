@@ -2,3 +2,5 @@
 json/data.json
 app.log
 **/*.pyc
+*.pyc
+Ayuda

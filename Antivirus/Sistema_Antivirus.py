@@ -7,18 +7,14 @@ class antiVirus: #Cambiar nombre de clase a Virustotal
     def scanVirusTotal(files, api):
         url = "https://www.virustotal.com/api/v3/files"
         
-        #response = requests.get(url, headers=headers)
         with open(files, "rb") as file_to_scan:
             file = {"file": file_to_scan}
             response = requests.post(url, headers={"x-apikey": api}, files=file)
             if response.status_code == 200:
-                #move.move.fileMove(files, destino)
                 print(response.status_code)
                 logging.info(f'Todo ha salido bien. Codigo: '+ str(response.status_code)+' Resultado del analisis'+response.text)
-                #antiVirus.ResultAnalysis(response, headers)
                 return response
             else:
-                #move.move.deleteFile(files)
                 logging.error(f'ha ocurrido un fallo. Codigo: '+ str(response.status_code))
                 print(response.status_code)
 
@@ -50,4 +46,7 @@ class antiVirus: #Cambiar nombre de clase a Virustotal
 
 
 class ALternaitivaAntivirus:
-    print()
+    def cuckooSandbox(ruta_origen, ruta_destino):
+        url_Cuckoo_Sandbox =""
+        response = requests.get(url_Cuckoo_Sandbox)
+    print("Se usa la alternativa")
