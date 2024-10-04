@@ -1,15 +1,15 @@
 # GestionDescargas
- Sistema para comprobar que los ficheros descagados no contengan virus. Si estos tienen virus, se procede  eliminanse de forma automatica.
+ Sistema para comprobar que los ficheros descagados no contengan virus. En caso de que los tengan, se eliminan de forma automática.
 
- Para poder hacer uso de esta aplicacion previamente se debe indicar una serie de parametros en un fichero de configuracion de tipo JSON. Este fichero debe contener la siguiente informacion
+ Para poder hacer uso de esta aplicación, previamente se deben indicar una serie de parámetros en un fichero de configuración de tipo JSON. Este fichero debe contener la siguiente información:
 
-- Ruta de la carpeta donde se encuentran los ficheros que se desea analizar
+- Ruta de la carpeta donde se encuentran los ficheros que se desean analizar
 - Ruta de la carpeta donde se desean mover los ficheros analizados
-- API Key de VirusTotal (Esta se debe optener en la web de la documentacion de la API y tiene que ser unica e intransferible)
-- Ruta de los ficheros de configuracion
+- API Key de VirusTotal (esta debe obtenerse en la web de la documentación de la API y tiene que ser única e intransferible)
+- Ruta de los ficheros de configuración
 
- El funcionamiento para analizar se basa en el uso de la api gratuita de VirusTotal que puede analizar ficheros de hasta 32MB de tamaño. Para ficheros ficheros de mayor tamaño se usa un sistema autohospeado en un entorno local con un sistema operativo basado en Linux. El sistema usa la aplicación CAPE sandbox para analizar los ficheros de mayor tamaño.
+ El funcionamiento se basa en el uso de la API gratuita de VirusTotal que puede analizar ficheros de hasta 32MB de tamaño. Para ficheros de mayor tamaño se usa un sistema autohospeado en un entorno local con un sistema operativo basado en Linux. Este usa la aplicación CAPE sandbox para analizar los ficheros de mayor tamaño.
 
- En caso de que el analisis de los ficheros indique que los ficheros no contienen virus, se procedera a mover a la ruta indicada en el fichero de configuracion. Si durante el analisis sale que algun fichero puede contener virus o algun software malicioso este se procedera a eliminarse de forma automatica
+ En caso de que el análisis de los ficheros indique que no contienen virus, se procederá a mover a la ruta indicada en el fichero de configuración. Si durante el análisis sale que alguún fichero puede contener virus o algún software malicioso, este se eliminará de forma automática.
  
  
