@@ -1,4 +1,6 @@
 
 json/data.json
 app.log
-Antivirus/__pycache__/Select.cpython-311.pyc
+**/*.pyc
+*.pyc
+Ayuda
