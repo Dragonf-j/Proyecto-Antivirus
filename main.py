@@ -1,5 +1,5 @@
 from Move import move
-from config import config
+from config.config import BasicConfig as basicConfig
 import logging
 
 # Configuración básica del logging
@@ -16,13 +16,13 @@ def main():
         print("Se procede a mover los ficheros de la carpeta origen a la carpeta destino")
 
         # Leer configuración desde el archivo JSON
-        json_config = config.basicConfig.readJson()
+        json_config = basicConfig.read_json()
         if not json_config:
             logging.error("No se pudo cargar la configuración desde el archivo JSON.")
             return
 
         # Ejecutar la lógica de movimiento de ficheros
-        move.move.readDir(json_config)
+        move.Move.read_dir(json_config)
         logging.info("Proceso completado con éxito.")
     except Exception as e:
         logging.error(f"Se produjo un error durante la ejecución: {str(e)}")

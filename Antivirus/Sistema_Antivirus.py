@@ -1,43 +1,45 @@
 import logging
 import requests
 import time
+import subprocess
 
 # Clase para el uso de la API de VirusTotal
 class VirusTotal:
 
-    # Función que se encarga de enviar los ficheros a la API para su análisis
     @staticmethod
     def scan_virus_total(files, api):
+        """
+        Envía un archivo a la API de VirusTotal para su análisis.
+        """
         url = "https://www.virustotal.com/api/v3/files"
-        
         try:
             with open(files, "rb") as file_to_scan:
                 file = {"file": file_to_scan}
                 response = requests.post(url, headers={"x-apikey": api}, files=file)
                 if response.status_code == 200:
-                    logging.info(f'Todo ha salido bien. Código: {response.status_code}. Resultado del análisis: {response.text}')
+                    logging.info(f"Análisis enviado correctamente. Código: {response.status_code}.")
                     return response
                 else:
-                    logging.error(f'Error al enviar el archivo. Código: {response.status_code}. Respuesta: {response.text}')
+                    logging.error(f"Error al enviar el archivo. Código: {response.status_code}. Respuesta: {response.text}")
                     return None
         except Exception as e:
-            logging.error(f'Error al abrir o enviar el archivo: {str(e)}')
+            logging.error(f"Error al abrir o enviar el archivo: {str(e)}")
             return None
 
-    # Función que obtiene el resultado del análisis y lo envía al fichero .log
     @staticmethod
     def result_analysis(files, api):
+        """
+        Obtiene el resultado del análisis de VirusTotal.
+        """
         headers = {
             "accept": "application/json",
-            "x-apikey": api,
-            "content-type": "multipart/form-data"
+            "x-apikey": api
         }
         response = VirusTotal.scan_virus_total(files, api)
         if not response:
             logging.error("No se pudo obtener una respuesta válida de la API.")
             return None
 
-        # Obtener el ID del análisis
         try:
             analysis_id = response.json().get("data", {}).get("id")
             if not analysis_id:
@@ -52,7 +54,6 @@ class VirusTotal:
             try:
                 analysis_response = requests.get(url_analysis, headers=headers)
                 analysis_status = analysis_response.json().get("data", {}).get("attributes", {}).get("status")
-                
                 if analysis_status == "completed":
                     logging.info("Análisis completado.")
                     break
@@ -72,17 +73,23 @@ class VirusTotal:
             logging.error(f"Error al procesar la respuesta final del análisis: {str(e)}")
             return None
 
-# Clase para el uso de la alternativa a VirusTotal
+
 class AlternativaAntivirus:
 
-    # Función que se encarga de enviar los ficheros al sistema alternativo para ser analizados
     @staticmethod
-    def alternative(ruta_origen, url_cape_v2):
+    def alternative(ruta_origen):
+        """
+        Usa Microsoft Defender para analizar un archivo o carpeta.
+        """
         try:
-            response = requests.get(url_cape_v2)
-            if response.status_code == 200:
-                logging.info("El análisis con la alternativa se realizó correctamente.")
+            comando = f'powershell "Start-MpScan -ScanPath \'{ruta_origen}\' -ScanType CustomScan"'
+            resultado = subprocess.run(comando, shell=True, capture_output=True, text=True)
+            if resultado.returncode == 0:
+                logging.info("✅ Escaneo completado con Microsoft Defender.")
+                return resultado.stdout
             else:
-                logging.error(f"Error al usar la alternativa. Código: {response.status_code}. Respuesta: {response.text}")
+                logging.error(f"⚠️ Error en el escaneo con Microsoft Defender. Código de salida: {resultado.returncode}")
+                return None
         except Exception as e:
-            logging.error(f"Error al conectar con la alternativa: {str(e)}")
+            logging.error(f"Error al ejecutar el escaneo con Microsoft Defender: {str(e)}")
+            return None

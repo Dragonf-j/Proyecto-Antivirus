@@ -3,9 +3,8 @@ import logging
 import os
 
 class BasicConfig:
-    carpeta_destino = ''
-    carpeta_origen = ''
-    filename = ''
+    # Constantes para las claves requeridas en el JSON
+    REQUIRED_KEYS = ['logFileName', 'carpeta_origen', 'carpeta_destino', 'api_virustotal']
 
     @staticmethod
     def read_json():
@@ -13,24 +12,31 @@ class BasicConfig:
         Lee y guarda la información del archivo JSON de configuración.
         """
         try:
-            with open('./json/data.json', 'r') as file:
+            # Ruta del archivo JSON
+            json_path = './json/data.json'
+            if not os.path.exists(json_path):
+                raise FileNotFoundError(f"El archivo JSON de configuración no se encontró en: {json_path}")
+
+            # Cargar el archivo JSON
+            with open(json_path, 'r') as file:
                 json_data = json.load(file)
 
             # Validar que las claves necesarias existan en el JSON
-            required_keys = ['logFileName', 'carpeta_origen', 'carpeta_destino', 'api-VirusTotal']
-            for key in required_keys:
-                if key not in json_data:
-                    raise KeyError(f"Falta la clave requerida en el JSON: {key}")
+            missing_keys = [key for key in BasicConfig.REQUIRED_KEYS if key not in json_data]
+            if missing_keys:
+                raise KeyError(f"Faltan las siguientes claves requeridas en el JSON: {', '.join(missing_keys)}")
 
-            filename = json_data['logFileName']
-            BasicConfig.config_log(filename)
+            # Configurar el logging con el nombre del archivo especificado en el JSON
+            BasicConfig.config_log(json_data['logFileName'])
             return json_data
-        except FileNotFoundError:
-            logging.error("El archivo JSON de configuración no se encontró.")
-        except KeyError as exp:
-            logging.error(f"Error en el formato del JSON: {str(exp)}")
-        except Exception as exp:
-            logging.error(f"Se ha producido un error leyendo el JSON: {str(exp)}")
+        except FileNotFoundError as e:
+            logging.error(str(e))
+        except KeyError as e:
+            logging.error(f"Error en el formato del JSON: {str(e)}")
+        except json.JSONDecodeError as e:
+            logging.error(f"Error al decodificar el archivo JSON: {str(e)}")
+        except Exception as e:
+            logging.error(f"Se ha producido un error leyendo el JSON: {str(e)}")
         return None
 
     @staticmethod
@@ -39,6 +45,11 @@ class BasicConfig:
         Configura el sistema de logging con el archivo de log especificado.
         """
         try:
+            # Crear el archivo de log si no existe
+            log_dir = os.path.dirname(filename)
+            if log_dir and not os.path.exists(log_dir):
+                os.makedirs(log_dir)
+
             logging.basicConfig(
                 filename=filename,
                 level=logging.DEBUG,
@@ -46,42 +57,27 @@ class BasicConfig:
                 datefmt='%Y-%m-%d %H:%M:%S'
             )
             logging.info("Configuración de logging completada.")
-        except Exception as exp:
-            logging.error(f"Error al configurar el logging: {str(exp)}")
+        except Exception as e:
+            logging.error(f"Error al configurar el logging: {str(e)}")
 
     @staticmethod
     def get_path_origin(json_data):
-        """
-        Obtiene la ruta donde se encuentran los ficheros originalmente.
-        """
         return json_data.get('carpeta_origen', '')
 
     @staticmethod
     def get_destine(json_data):
-        """
-        Obtiene la ruta donde serán enviados los ficheros analizados.
-        """
         return json_data.get('carpeta_destino', '')
 
     @staticmethod
     def get_log_name(json_data):
-        """
-        Obtiene el nombre del fichero log para llevar un registro.
-        """
         return json_data.get('logFileName', '')
 
     @staticmethod
     def get_api_key(json_data):
-        """
-        Obtiene la clave de la API de VirusTotal para ser usada.
-        """
-        return json_data.get('api-VirusTotal', '')
+        return json_data.get('api_virustotal', '')
 
     @staticmethod
     def get_url_cape_v2(json_data):
-        """
-        Obtiene la URL del sistema alternativo.
-        """
-        return json_data.get('api-VirusTotal', '')
+        return json_data.get('api_virustotal', '')
 
 
