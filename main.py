@@ -16,7 +16,7 @@ def main():
         print("Se procede a mover los ficheros de la carpeta origen a la carpeta destino")
 
         # Leer configuración desde el archivo JSON
-        json_config = basicConfig.read_json()
+        json_config = basicConfig.read_env()
         if not json_config:
             logging.error("No se pudo cargar la configuración desde el archivo JSON.")
             return

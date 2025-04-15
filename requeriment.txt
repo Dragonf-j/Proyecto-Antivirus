@@ -1,0 +1,6 @@
+# --- Requerimientos principales ---
+requests>=3.11.2        # Para la API de VirusTotal
+python-dotenv>=1.0.0     # Para cargar configuración desde el archivo .env
+
+# --- Opcionales pero recomendados ---
+# pytest>=8.3.3         # Para hacer tests automatizados

@@ -1,6 +1,7 @@
 from config.config import BasicConfig 
 
-BasicConfig = BasicConfig.read_json()
-assert BasicConfig["ruta_origen"]
-assert BasicConfig["ruta_destino"] 
-assert BasicConfig["api_key"]
+basicConfig = BasicConfig.read_env()
+assert basicConfig["ruta_origen"] is not None
+assert basicConfig["ruta_destino"] is not None
+assert basicConfig["apikey"] is not None
+assert basicConfig["logFileName"] is not None

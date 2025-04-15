@@ -12,7 +12,8 @@ class Move:
         Lee la carpeta de origen y envía los archivos para su análisis.
         """
         try:
-            carpeta_origen = BasicConfig.get_path_origin(json)
+            origen = BasicConfig.read_env()
+            carpeta_origen = origen["ruta_origen"]
             if not os.path.exists(carpeta_origen):
                 logging.error(f"La carpeta de origen no existe: {carpeta_origen}")
                 return

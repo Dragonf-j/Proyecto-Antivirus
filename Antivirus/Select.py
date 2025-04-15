@@ -15,10 +15,10 @@ class Select:
             if not os.path.exists(fichero):
                 logging.error(f"El fichero no existe: {fichero}")
                 return
-
-            key = BasicConfig.get_api_key(json)
-            carpeta_destino = BasicConfig.get_destine(json)
-            cape = BasicConfig.get_url_cape_v2(json)
+            config = BasicConfig.read_env()
+            key = config["apikey"]
+            carpeta_destino = config["ruta_destino"]
+            ##cape = BasicConfig.get_url_cape_v2(json)
             tamaño_mb = os.stat(fichero).st_size / (1024 * 1024)
 
             logging.info(f"Tamaño del fichero '{fichero}': {tamaño_mb:.2f} MB.")
