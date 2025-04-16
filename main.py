@@ -12,13 +12,16 @@ def main():
     de la lógica de movimiento de ficheros después del análisis.
     """
     try:
+          # Leer configuración desde .env
+        config = basicConfig.read_env()
+        basicConfig.configurar_logging(config['logFileName'])
+        
+        
         logging.info("Iniciando el proceso de movimiento de ficheros.")
         print("Se procede a mover los ficheros de la carpeta origen a la carpeta destino")
         
 
-        # Leer configuración desde el archivo JSON
-        config = basicConfig.read_env()
-        basicConfig.configurar_logging(config['logFileName'])
+      
         
         # Configurar logging con el archivo especificado en la configuración
         if not config:
