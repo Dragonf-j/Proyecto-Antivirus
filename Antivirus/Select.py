@@ -7,7 +7,7 @@ from config.config import BasicConfig
 class Select:
 
     @staticmethod
-    def classify(json, fichero):
+    def classify(fichero):
         """
         Clasifica un archivo según su tamaño y lo analiza con el sistema adecuado.
         """
@@ -24,7 +24,7 @@ class Select:
             logging.info(f"Tamaño del fichero '{fichero}': {tamaño_mb:.2f} MB.")
 
             if tamaño_mb < 32:
-                url_analysis = Sistema_Antivirus.VirusTotal.result_analysis(fichero, key)
+                url_analysis = Sistema_Antivirus.Sistema_Antivirus._analizar_con_virustotal(fichero, key)
                 if not url_analysis:
                     logging.error(f"No se pudo obtener el análisis para el fichero: {fichero}")
                     return
@@ -39,6 +39,6 @@ class Select:
                 else:
                     move.Move.delete_file(fichero)
             else:
-                Sistema_Antivirus.AlternativaAntivirus.alternative(fichero)
+                Sistema_Antivirus.Sistema_Antivirus._analizar_con_defender(fichero)
         except Exception as e:
             logging.error(f"Error al clasificar el fichero: {str(e)}")

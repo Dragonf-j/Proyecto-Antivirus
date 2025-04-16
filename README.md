@@ -1,15 +1,48 @@
-# GestionDescargas
- Sistema para comprobar que los ficheros descagados no contengan virus. En caso de que los tengan, se eliminan de forma automática.
+🛡️ GestionDescargas - Sistema de análisis automático de archivos
+Este proyecto analiza archivos automáticamente según su tamaño y los mueve o elimina en función del resultado del análisis antivirus.
 
- Para poder hacer uso de esta aplicación, previamente se deben indicar una serie de parámetros en un fichero de configuración de tipo JSON. Este fichero debe contener la siguiente información:
+✅ ¿Cómo funciona?
+Según el tamaño del archivo, se usa uno de estos tres motores:
 
-- Ruta de la carpeta donde se encuentran los ficheros que se desean analizar
-- Ruta de la carpeta donde se desean mover los ficheros analizados
-- API Key de VirusTotal (esta debe obtenerse en la web de la documentación de la API y tiene que ser única e intransferible)
-- Ruta de los ficheros de configuración
 
- El funcionamiento se basa en el uso de la API gratuita de VirusTotal que puede analizar ficheros de hasta 32MB de tamaño. Para ficheros de mayor tamaño se usa un sistema autohospeado en un entorno local con un sistema operativo basado en Linux. Este usa la aplicación CAPE sandbox para analizar los ficheros de mayor tamaño.
+Tamaño del archivo	Motor utilizado
+< 32 MB	🌐 VirusTotal (API)
+32–150 MB	🛡️ Microsoft Defender
+> 150 MB	🐚 ClamAV (en Windows VM)
+📦 Requisitos del sistema
+1. Python 3.8+
+2. Instalar dependencias:
+bash
+Copiar
+Editar
+pip install -r requirements.txt
+3. Crear el archivo .env en la raíz del proyecto:
+env
+Copiar
+Editar
+RUTA_ORIGEN=D:/Carpeta/Origen
+RUTA_DESTINO=D:/Carpeta/Destino
+APIKEY=tu_api_key_de_virustotal
+LOGFILENAME=logs/app.log
+4. Tener ClamAV instalado en la máquina virtual (solo se usa para archivos grandes)
+Instala desde: https://www.clamav.net/downloads
 
- En caso de que el análisis de los ficheros indique que no contienen virus, se procederá a mover a la ruta indicada en el fichero de configuración. Si durante el análisis sale que alguún fichero puede contener virus o algún software malicioso, este se eliminará de forma automática.
- 
+Y asegúrate de que el ejecutable clamscan.exe o clamdscan.exe esté en:
+
+makefile
+Copiar
+Editar
+C:\Program Files\ClamAV\
+🚀 Uso
+bash
+Copiar
+Editar
+python main.py
+Analiza archivos nuevos en la carpeta de origen
+
+Mueve los archivos limpios a destino
+
+Elimina o mueve los infectados a cuarentena
+
+Crea un log diario de lo procesado
  

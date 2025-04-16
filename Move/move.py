@@ -12,8 +12,8 @@ class Move:
         Lee la carpeta de origen y envía los archivos para su análisis.
         """
         try:
-            origen = BasicConfig.read_env()
-            carpeta_origen = origen["ruta_origen"]
+            config = BasicConfig.read_env()
+            carpeta_origen = config["ruta_origen"]
             if not os.path.exists(carpeta_origen):
                 logging.error(f"La carpeta de origen no existe: {carpeta_origen}")
                 return
@@ -21,7 +21,7 @@ class Move:
             ficheros = os.listdir(carpeta_origen)
             for fic in ficheros:
                 ruta_fichero = os.path.join(carpeta_origen, fic)
-                Select.Select.classify(json, ruta_fichero)
+                Select.Select.classify( ruta_fichero)
 
             logging.info("Se completó la lectura y clasificación de los ficheros.")
         except Exception as exp:

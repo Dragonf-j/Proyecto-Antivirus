@@ -3,10 +3,10 @@ import shutil
 from pathlib import Path
 
 # Simula el análisis de un archivo
-def simular_analisis_archivo(file_path):
-    if "seguro" in file_path.name:
+def simular_analisis_archivo(ruta_origen):
+    if "seguro" in ruta_origen.name:
         return "limpio"
-    elif "infectado" in file_path.name:
+    elif "infectado" in ruta_origen.name:
         return "infectado"
     return "desconocido"
 
