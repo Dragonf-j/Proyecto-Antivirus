@@ -3,6 +3,7 @@ import os
 import requests
 import time
 import logging
+from Move import move
 
 class Sistema_Antivirus:
 
@@ -23,14 +24,14 @@ class Sistema_Antivirus:
         else:
             return self._analizar_con_clamav(ruta_origen)
 
-    def _analizar_con_virustotal(self, ruta_origen):
+    def _analizar_con_virustotal(self, ruta_origen, ruta_destino):
         try:
             with open(ruta_origen, "rb") as f:
                 response = requests.post(self.vt_url, headers=self.headers, files={"file": f})
             if response.status_code == 200:
                 analysis_url = response.json()["data"]["id"]
                 logging.info("Archivo enviado a VirusTotal correctamente. Esperando análisis...")
-                return self._esperar_resultado_virustotal(analysis_url)
+                return self._esperar_resultado_virustotal(analysis_url, ruta_destino, ruta_origen)
             else:
                 logging.error(f"❌ Error al subir archivo a VirusTotal: {response.status_code}")
                 return "error"
@@ -38,7 +39,7 @@ class Sistema_Antivirus:
             logging.error(f"❌ Excepción al usar VirusTotal: {e}")
             return "error"
 
-    def _esperar_resultado_virustotal(self, analysis_id):
+    def _esperar_resultado_virustotal(self, analysis_id, ruta_destino, ruta_origen):
         analysis_url = f"https://www.virustotal.com/api/v3/analyses/{analysis_id}"
         for _ in range(10):
             response = requests.get(analysis_url, headers=self.headers)
@@ -46,14 +47,18 @@ class Sistema_Antivirus:
                 result = response.json()
                 stats = result["data"]["attributes"]["stats"]
                 if stats["malicious"] > 0:
+                    move.Move.delete_file(ruta_destino)
+                    logging.info(f"Archivo {ruta_destino} eliminado.")
                     return "infectado"
                 elif stats["undetected"] > 0:
+                    move.Move.file_move(ruta_origen, ruta_destino)
+                    logging.info(f"Archivo {ruta_origen} movido a la carpeta de destino.")
                     return "limpio"
-            time.sleep(5)
+            time.sleep(30)
         logging.warning("⚠️ Timeout esperando análisis de VirusTotal.")
         return "desconocido"
 
-    def _analizar_con_defender(self, ruta_origen):
+    def _analizar_con_defender(self, ruta_origen, ruta_destino):
         defender_path = r"C:\Program Files\Windows Defender\MpCmdRun.exe"
 
         if not os.path.exists(defender_path):
@@ -75,8 +80,12 @@ class Sistema_Antivirus:
             logging.info(f"🛡️ Código de salida: {process.returncode}")
 
             if "no threats" in stdout.lower():
+                move.Move.file_move(ruta_origen, ruta_destino)
+                logging.info(f"Archivo {ruta_origen} movido a la carpeta de destino.")
                 return "limpio"
             elif "threat" in stdout.lower() or process.returncode == 2:
+                move.Move.delete_file(ruta_origen)
+                logging.info(f"Archivo {ruta_origen} eliminado.")
                 return "infectado"
             elif "0x80508023" in stdout or "too large" in stdout.lower():
                 return "no_escanable"
@@ -88,7 +97,7 @@ class Sistema_Antivirus:
             logging.error(f"❌ Error ejecutando Defender: {e}")
             return "error"
 
-    def _analizar_con_clamav(self, ruta_origen):
+    def _analizar_con_clamav(self, ruta_origen, ruta_destino):
         try:
             clamscan_paths = [r"C:\Program Files\ClamAV\clamscan.exe", r"C:\Program Files\ClamAV\clamdscan.exe"]
             clamav = next((p for p in clamscan_paths if os.path.exists(p)), None)
@@ -104,8 +113,12 @@ class Sistema_Antivirus:
             logging.info(f"🐚 ClamAV código de salida: {result.returncode}")
 
             if result.returncode == 0:
+                move.Move.file_move(ruta_origen, ruta_destino) 
+                logging.info(f"Archivo {ruta_origen} movido a la carpeta de destino.")
                 return "limpio"
             elif result.returncode == 1:
+                move.Move.delete_file(ruta_origen)
+                logging.info(f"Archivo {ruta_origen} eliminado.")
                 return "infectado"
             else:
                 return "error"

@@ -14,6 +14,7 @@ class Move:
         try:
           
             carpeta_origen = config["ruta_origen"]
+            carpeta_destino = config["ruta_destino"]
             if not os.path.exists(carpeta_origen):
                 logging.error(f"La carpeta de origen no existe: {carpeta_origen}")
                 return
@@ -21,7 +22,7 @@ class Move:
             ficheros = os.listdir(carpeta_origen)
             for fic in ficheros:
                 ruta_fichero = os.path.join(carpeta_origen, fic)
-                Select.Select.seleccion(config, ruta_fichero)
+                Select.Select.seleccion(config, ruta_fichero, carpeta_destino)
 
             logging.info("Se completó la lectura y clasificación de los ficheros.")
         except Exception as exp:
