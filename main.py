@@ -3,7 +3,7 @@ from config.config import BasicConfig as basicConfig
 import logging
 
 # Configuración básica del logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# Logging configurado por BasicConfig
 
 def main():
     """
@@ -14,15 +14,21 @@ def main():
     try:
         logging.info("Iniciando el proceso de movimiento de ficheros.")
         print("Se procede a mover los ficheros de la carpeta origen a la carpeta destino")
+        
 
         # Leer configuración desde el archivo JSON
-        json_config = basicConfig.read_env()
-        if not json_config:
+        config = basicConfig.read_env()
+        basicConfig.configurar_logging(config['logFileName'])
+        
+        # Configurar logging con el archivo especificado en la configuración
+        if not config:
             logging.error("No se pudo cargar la configuración desde el archivo JSON.")
             return
-
+        
+        basicConfig.configurar_logging(config['logFileName'])
+        move.Move.read_dir(config)
         # Ejecutar la lógica de movimiento de ficheros
-        move.Move.read_dir(json_config)
+      
         logging.info("Proceso completado con éxito.")
     except Exception as e:
         logging.error(f"Se produjo un error durante la ejecución: {str(e)}")

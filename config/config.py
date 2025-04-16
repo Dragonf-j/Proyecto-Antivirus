@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+import logging
 
 class BasicConfig:
     @staticmethod
@@ -18,3 +19,14 @@ class BasicConfig:
                 raise ValueError(f"Falta la variable '{{key}}' en el archivo .env")
 
         return config
+
+    @staticmethod
+    def configurar_logging(ruta_log):
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(levelname)s - %(message)s',
+            handlers=[
+                logging.FileHandler(ruta_log, mode='a', encoding='utf-8'),
+                logging.StreamHandler()
+            ]
+        )

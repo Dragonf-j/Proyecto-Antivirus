@@ -7,12 +7,12 @@ from Antivirus import Select
 class Move:
 
     @staticmethod
-    def read_dir(json):
+    def read_dir(config):
         """
         Lee la carpeta de origen y envía los archivos para su análisis.
         """
         try:
-            config = BasicConfig.read_env()
+          
             carpeta_origen = config["ruta_origen"]
             if not os.path.exists(carpeta_origen):
                 logging.error(f"La carpeta de origen no existe: {carpeta_origen}")
@@ -21,7 +21,7 @@ class Move:
             ficheros = os.listdir(carpeta_origen)
             for fic in ficheros:
                 ruta_fichero = os.path.join(carpeta_origen, fic)
-                Select.Select.classify( ruta_fichero)
+                Select.Select.seleccion(config, ruta_fichero)
 
             logging.info("Se completó la lectura y clasificación de los ficheros.")
         except Exception as exp:

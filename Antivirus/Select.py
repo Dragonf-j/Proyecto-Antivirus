@@ -1,44 +1,15 @@
 import os
-import logging
-from Antivirus import Sistema_Antivirus
-from Move import move
-from config.config import BasicConfig
+from Antivirus.Sistema_Antivirus import Sistema_Antivirus
 
 class Select:
-
     @staticmethod
-    def classify(fichero):
-        """
-        Clasifica un archivo según su tamaño y lo analiza con el sistema adecuado.
-        """
-        try:
-            if not os.path.exists(fichero):
-                logging.error(f"El fichero no existe: {fichero}")
-                return
-            config = BasicConfig.read_env()
-            key = config["apikey"]
-            carpeta_destino = config["ruta_destino"]
-            ##cape = BasicConfig.get_url_cape_v2(json)
-            tamaño_mb = os.stat(fichero).st_size / (1024 * 1024)
+    def seleccion(config, file_path):
+        size_mb = os.path.getsize(file_path) / (1024 * 1024)
+        sistema = Sistema_Antivirus(config)
 
-            logging.info(f"Tamaño del fichero '{fichero}': {tamaño_mb:.2f} MB.")
-
-            if tamaño_mb < 32:
-                url_analysis = Sistema_Antivirus.Sistema_Antivirus._analizar_con_virustotal(fichero, key)
-                if not url_analysis:
-                    logging.error(f"No se pudo obtener el análisis para el fichero: {fichero}")
-                    return
-
-                stats = url_analysis.get("data", {}).get("attributes", {}).get("stats", {})
-                malicious = stats.get("malicious", 0)
-                suspicious = stats.get("suspicious", 0)
-                logging.info(f"Resultados del análisis. Maliciosos: {malicious}, Sospechosos: {suspicious}")
-
-                if malicious == 0 and suspicious == 0:
-                    move.Move.file_move(fichero, carpeta_destino)
-                else:
-                    move.Move.delete_file(fichero)
-            else:
-                Sistema_Antivirus.Sistema_Antivirus._analizar_con_defender(fichero)
-        except Exception as e:
-            logging.error(f"Error al clasificar el fichero: {str(e)}")
+        if size_mb < 32:
+            return sistema._analizar_con_virustotal(file_path)
+        elif 32 <= size_mb < 150:
+            return sistema._analizar_con_defender(file_path)
+        else:
+            return sistema._analizar_con_clamav(file_path)

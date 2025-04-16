@@ -4,3 +4,5 @@ app.log
 **/*.pyc
 *.pyc
 Ayuda
+.env
+__pycache__/
